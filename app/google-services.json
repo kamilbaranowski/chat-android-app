@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1082287601628",
+    "firebase_url": "https://chatapp-19116.firebaseio.com",
+    "project_id": "chatapp-19116",
+    "storage_bucket": "chatapp-19116.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1082287601628:android:c7c456974eac4d8f13c119",
+        "android_client_info": {
+          "package_name": "pl.kamilbaranowski.chatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1082287601628-7hse1l51ldrfrbn19tkp7iti7n36n2hh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLxbdszSOKetwCRG9rkOry1dtu_8BI-ok"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1082287601628-7hse1l51ldrfrbn19tkp7iti7n36n2hh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
