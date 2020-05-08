@@ -1,15 +1,18 @@
 package pl.kamilbaranowski.chatapp
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_main.*
+import okhttp3.*
+import pl.kamilbaranowski.chatapp.model.ConnectionInfo
 import pl.kamilbaranowski.chatapp.model.User
-import kotlin.math.log
+import java.io.IOException
+
 
 class RegistrationActivity : AppCompatActivity() {
 
@@ -19,7 +22,7 @@ class RegistrationActivity : AppCompatActivity() {
 
 
         signUp_button_registration.setOnClickListener {
-            performRegistration()
+            performRegistration(this)
 
         }
 
@@ -29,7 +32,7 @@ class RegistrationActivity : AppCompatActivity() {
         }
     }
 
-    private fun performRegistration() {
+    private fun performRegistration(context: Context) {
         val username = username_editText_registration.text.toString()
         val email = email_editText_registration.text.toString()
         val password = password_editText_registration.text.toString()
@@ -39,6 +42,39 @@ class RegistrationActivity : AppCompatActivity() {
             return
         }
 
+        val connectionInfo = ConnectionInfo();
+
+        val url = connectionInfo.getHost() + "/register"
+
+        val requestBody = FormBody.Builder()
+            .add("username", username)
+            .add("email", email)
+            .add("password", password)
+            .add("status", "online")
+            .build()
+
+        val request = Request.Builder()
+            .url(url)
+            .addHeader("Content-Type", "application/json")
+            .method("POST", requestBody)
+            .build()
+        Log.d("RegistrationActivity", request.headers.toString())
+        val client = connectionInfo.getUnsafeOkHttpClient()
+        client?.newCall(request)?.enqueue(object: Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.d("RegistrationActivity", "Failed to execute request: " + e.message.toString())
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                Log.d("RegistrationActivity", "Success: " + response.body?.string())
+                val intent = Intent(context, LatestMessagesActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            }
+
+        })
+
+/*
         FirebaseAuth.getInstance()
             .createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
@@ -55,6 +91,8 @@ class RegistrationActivity : AppCompatActivity() {
                 Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
                 Log.d("RegistrationActivity", "Error: ${it.message}")
             }
+
+ */
     }
 
     private fun saveUserInFirebase(uid: String, username: String, email: String) {
