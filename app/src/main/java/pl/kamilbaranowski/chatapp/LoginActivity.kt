@@ -1,13 +1,17 @@
 package pl.kamilbaranowski.chatapp
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import com.google.firebase.auth.FirebaseAuth
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_login.*
 import okhttp3.*
+import pl.kamilbaranowski.chatapp.model.ConnectionInfo
 import java.io.IOException
+
+
 
 class LoginActivity : AppCompatActivity() {
 
@@ -17,11 +21,11 @@ class LoginActivity : AppCompatActivity() {
 
 
         signIn_button_login.setOnClickListener {
-            performLogin()
+            performLogin(this)
         }
     }
 
-    private fun performLogin() {
+    private fun performLogin(context: Context) {
         val email = email_editText_login.text.toString()
         val password = password_editText_login.text.toString()
 
@@ -29,26 +33,34 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(this, "Enter your email and password", Toast.LENGTH_SHORT).show()
             return
         }
-        val url = "https://192.168.1.18:8080/users"
+        val connectionInfo = ConnectionInfo();
+
+        val url = connectionInfo.getHost()
 
         val requestBody = FormBody.Builder()
             .add("email", email)
             .add("password", password)
             .build()
 
-        val request = Request.Builder().url(url)
+        val request = Request.Builder()
+            .url(url)
             .addHeader("Content-Type", "application/json")
-            .method("PUT", requestBody)
+            .method("POST", requestBody)
             .build()
-
-        val client = OkHttpClient()
-        client.newCall(request).enqueue(object: Callback {
+        Log.d("LoginActivity", request.headers.toString())
+        val client = connectionInfo.getUnsafeOkHttpClient()
+        client?.newCall(request)?.enqueue(object: Callback {
             override fun onFailure(call: Call, e: IOException) {
-                Log.d("LoginActivity", "Failed to execute request: " + e.message)
+                Log.d("LoginActivity", "Failed to execute request: " + e.message.toString())
             }
 
             override fun onResponse(call: Call, response: Response) {
-                Log.d("LoginActivity", response.body.toString())
+                //parse JWT
+                //val sharedPref = context.getSharedPreferences("token", Context.MODE_PRIVATE)
+                //sharedPref.edit().putString("token", response.body?.string()).apply()
+                Log.d("LoginActivity", "Success: " + response.body?.string())
+                val intent = Intent(context, LatestMessagesActivity::class.java)
+                startActivity(intent)
             }
 
         })

@@ -11,7 +11,7 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 class ConnectionInfo {
-    private val host = "https://192.168.1.21:8443/"
+    private val host = "https://192.168.1.21:8443"
 
 
     fun getHost(): String{
