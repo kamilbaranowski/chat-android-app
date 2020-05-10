@@ -1,4 +1,9 @@
 package pl.kamilbaranowski.chatapp.model
 
-class User( val username: String, val password: String, val email: String, val status: String) {
+import android.os.Parcel
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+class User( val username: String, val password: String, val email: String, val status: String) : Parcelable {
 }
