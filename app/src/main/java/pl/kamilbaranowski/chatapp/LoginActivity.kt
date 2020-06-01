@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_login.*
 import okhttp3.*
 import pl.kamilbaranowski.chatapp.model.ConnectionInfo
@@ -55,12 +56,20 @@ class LoginActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call, response: Response) {
-                //parse JWT
-                //val sharedPref = context.getSharedPreferences("token", Context.MODE_PRIVATE)
-                //sharedPref.edit().putString("token", response.body?.string()).apply()
-                Log.d("LoginActivity", "Success: " + response.body?.string())
-                val intent = Intent(context, LatestMessagesActivity::class.java)
-                startActivity(intent)
+                val token = response.body?.string()
+                val sharedPref = context.getSharedPreferences("token", Context.MODE_PRIVATE)
+                sharedPref.edit().putString("token", token).apply()
+                Log.d("LoginActivity", "Success: " + token)
+                FirebaseAuth.getInstance().signInWithCustomToken(token!!)
+                    .addOnSuccessListener {
+                        Log.d("Login UID: ", it.user?.uid)
+                        val intent = Intent(context, LatestMessagesActivity::class.java)
+                        startActivity(intent)
+                    }
+                    .addOnFailureListener {
+                        Log.d("LoginActivity", "Failed: " + token + "\nMessage: " + it.message)
+                    }
+
             }
 
         })
