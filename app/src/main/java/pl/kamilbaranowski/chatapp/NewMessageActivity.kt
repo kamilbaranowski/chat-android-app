@@ -67,7 +67,8 @@ class NewMessageActivity : AppCompatActivity() {
             val keys: Iterator<String> = users.keys();
             while (keys.hasNext()) {
                 var key = keys.next()
-                var email = key
+                var uid = key
+                var email = users.getJSONObject(key).getString("email")
                 var username = users.getJSONObject(key).getString("username")
                 var password = users.getJSONObject(key).getString("password")
                 var status = users.getJSONObject(key).getString("status")
@@ -75,7 +76,7 @@ class NewMessageActivity : AppCompatActivity() {
                 Log.d("NewMessageActivity", key)
                 Log.d("NewMessageActivity", users.getJSONObject(key).toString())
 
-                adapter.add(UserItem(User(username, password, email, status)))
+                adapter.add(UserItem(User(uid, username, password, email, status)))
             }
             adapter.setOnItemClickListener { item, view ->
                 val userItem = item as UserItem
