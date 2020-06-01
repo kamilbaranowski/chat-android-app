@@ -6,11 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.*
 import pl.kamilbaranowski.chatapp.model.ConnectionInfo
-import pl.kamilbaranowski.chatapp.model.User
 import java.io.IOException
 
 
@@ -73,39 +71,5 @@ class RegistrationActivity : AppCompatActivity() {
             }
 
         })
-
-/*
-        FirebaseAuth.getInstance()
-            .createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener {
-                if (!it.isSuccessful){
-                    return@addOnCompleteListener
-                }
-                val uid = it.result?.user?.uid
-                Log.d("RegistrationActivity", "Completed registered: $uid")
-                if (uid.isNullOrEmpty())
-                    return@addOnCompleteListener
-                saveUserInFirebase(uid, username, email)
-            }
-            .addOnFailureListener {
-                Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
-                Log.d("RegistrationActivity", "Error: ${it.message}")
-            }
-
- */
-    }
-
-    private fun saveUserInFirebase(uid: String, username: String, email: String) {
-
-
-        val user = User(uid, username, email, "online")
-        FirebaseDatabase.getInstance().getReference("users/$uid")
-            .setValue(user)
-            .addOnSuccessListener {
-                Log.d("RegistrationActivity", "User added to database")
-            }
-            .addOnFailureListener {
-                Log.d("RegistrationActivity", "Error while adding user to database: ${it.message}")
-            }
     }
 }
